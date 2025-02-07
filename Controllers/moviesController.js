@@ -2,17 +2,17 @@ const fs = require("fs");
 const Movie = require("../Models/movieModel");
 let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
 //middleware 1
-const checkId = (req, res, next, value) => {
-  console.log("movie ID is" + value);
-  const singleMovie = movies.find((ele) => ele.id === value * 1);
-  if (!singleMovie) {
-    return res.status(404).json({
-      status: "faild",
-      message: "Movie with id " + value + " is not found",
-    });
-  }
-  next();
-};
+// const checkId = (req, res, next, value) => {
+//   console.log("movie ID is" + value);
+//   const singleMovie = movies.find((ele) => ele.id === value * 1);
+//   if (!singleMovie) {
+//     return res.status(404).json({
+//       status: "faild",
+//       message: "Movie with id " + value + " is not found",
+//     });
+//   }
+//   next();
+// };
 //middleware 2
 const validateBody = (req, res, next) => {
   if (!req.body.name || !req.body.releseYear) {
@@ -25,33 +25,64 @@ const validateBody = (req, res, next) => {
 };
 
 // GET api- /movies
-const getAllMovies = (req, res) => {
-  res.status(200).json({
-    status: "Success",
-    count: movies.length,
-    requestAt: req.requestAt,
-    data: {
-      movies: movies,
-    },
-  });
+const getAllMovies = async (req, res) => {
+  try {
+    const allMovie = await Movie.find();
+    res.status(200).json({
+      message: "Success",
+      length: allMovie.length,
+      data: {
+        allMovie,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error.message,
+    });
+  }
+  // res.status(200).json({
+  //   status: "Success",
+  //   count: movies.length,
+  //   requestAt: req.requestAt,
+  //   data: {
+  //     movies: movies,
+  //   },
+  // });
 };
-const getAllMovieById = (req, res) => {
-  const id = req.params.id * 1;
-  const singleMovie = movies.find((ele) => ele.id === id);
+const getAllMovieById = async(req, res) => {
+  try {
+    const id = req.params.id;
+    // const getMovieById = await Movie.find({_id:id})
+    const getMovieById = await Movie.findById(id)
+    res.status(200).json({
+      status:"Success",
+      data:getMovieById
+    })
+    
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message:error.message
+    })
+  }
+  
+  // const id = req.params.id * 1;
+  // const singleMovie = movies.find((ele) => ele.id === id);
   //   if (!singleMovie) {
   //     return res.status(404).json({
   //       status: "faild",
   //       message: "Movie with id " + id + " is not found",
   //     });
   //   }
-  res.status(200).json({
-    status: "success",
-    data: {
-      movie: singleMovie,
-    },
-  });
+  // res.status(200).json({
+  //   status: "success",
+  //   data: {
+  //     movie: singleMovie,
+  //   },
+  // });
 };
-const insertMovie = async(req, res) => {
+const insertMovie = async (req, res) => {
   // const movie = new Movie({
   //   name: req.body.name,
   //   description: req.body.description,
@@ -70,19 +101,18 @@ const insertMovie = async(req, res) => {
   //   })
   // })
   try {
-    const movie1 = await Movie.create(req.body)
+    const movie1 = await Movie.create(req.body);
     res.status(201).json({
       status: "Success",
-      data:{
-        movie1
-      }
-    })
-
+      data: {
+        movie1,
+      },
+    });
   } catch (error) {
     res.status(401).json({
       status: "fail",
-      message: error.message
-    })
+      message: error.message,
+    });
   }
   // const newID = movies[movies.length - 1].id + 1;
   // const newMovie = Object.assign({ id: newID }, req.body);
@@ -146,6 +176,5 @@ module.exports = {
   insertMovie,
   updateMovie,
   deleteMovie,
-  checkId,
   validateBody,
 };

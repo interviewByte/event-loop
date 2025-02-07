@@ -10,7 +10,7 @@ const {
   validateBody,
 } = require("../Controllers/moviesController");
 
-router.param("id", checkId);
+// router.param("id", checkId);
 router.route("/").get(getAllMovies).post( insertMovie);
 router
   .route("/:id")
