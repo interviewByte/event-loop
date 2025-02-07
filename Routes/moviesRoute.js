@@ -11,7 +11,7 @@ const {
 } = require("../Controllers/moviesController");
 
 router.param("id", checkId);
-router.route("/").get(getAllMovies).post(validateBody, insertMovie);
+router.route("/").get(getAllMovies).post( insertMovie);
 router
   .route("/:id")
   .get(getAllMovieById)
