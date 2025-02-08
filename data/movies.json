@@ -1,1 +1,73 @@
-[{"id":1,"name":"Raaz","releseYear":2000,"duration":90},{"id":2,"name":"Raaz1","releseYear":2005,"duration":100},{"id":3,"name":"Raaz2","releseYear":2005,"duration":120}]
+[
+    {
+      "name": "Interstellar",
+      "description": "A journey beyond the stars to save humanity.",
+      "duration": 169,
+      "rating": 8.6,
+      "totalRating": 1400000,
+      "releseYear": 2014,
+      "releseDate": "2014-11-07T00:00:00Z",
+      "genres": ["Sci-Fi", "Adventure"],
+      "directors": ["Christopher Nolan"],
+      "coverImage": "https://example.com/interstellar.jpg",
+      "actors": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
+      "price": 399
+    },
+    {
+      "name": "The Dark Knight",
+      "description": "A battle between Batman and the Joker.",
+      "duration": 152,
+      "rating": 9.0,
+      "totalRating": 2500000,
+      "releseYear": 2008,
+      "releseDate": "2008-07-18T00:00:00Z",
+      "genres": ["Action", "Crime", "Drama"],
+      "directors": ["Christopher Nolan"],
+      "coverImage": "https://example.com/darkknight.jpg",
+      "actors": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
+      "price": 349
+    },
+    {
+      "name": "Avengers: Endgame",
+      "description": "The epic conclusion to the Avengers saga.",
+      "duration": 181,
+      "rating": 8.4,
+      "totalRating": 2000000,
+      "releseYear": 2019,
+      "releseDate": "2019-04-26T00:00:00Z",
+      "genres": ["Action", "Sci-Fi", "Adventure"],
+      "directors": ["Anthony Russo", "Joe Russo"],
+      "coverImage": "https://example.com/endgame.jpg",
+      "actors": ["Robert Downey Jr.", "Chris Evans", "Scarlett Johansson"],
+      "price": 499
+    },
+    {
+      "name": "Parasite",
+      "description": "A dark social satire about class conflict.",
+      "duration": 132,
+      "rating": 8.6,
+      "totalRating": 1000000,
+      "releseYear": 2019,
+      "releseDate": "2019-05-30T00:00:00Z",
+      "genres": ["Drama", "Thriller"],
+      "directors": ["Bong Joon Ho"],
+      "coverImage": "https://example.com/parasite.jpg",
+      "actors": ["Song Kang-ho", "Lee Sun-kyun", "Cho Yeo-jeong"],
+      "price": 299
+    },
+    {
+      "name": "Inception",
+      "description": "A mind-bending thriller about dreams within dreams.",
+      "duration": 148,
+      "rating": 8.8,
+      "totalRating": 2000000,
+      "releseYear": 2010,
+      "releseDate": "2010-07-16T00:00:00Z",
+      "genres": ["Sci-Fi", "Thriller"],
+      "directors": ["Christopher Nolan"],
+      "coverImage": "https://example.com/inception.jpg",
+      "actors": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
+      "price": 299
+    }
+  ]
+  

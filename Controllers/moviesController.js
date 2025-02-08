@@ -128,46 +128,75 @@ const insertMovie = async (req, res) => {
   console.log(req.body);
   // res.send("Created")
 };
-const updateMovie = (req, res) => {
-  const id = req.params.id * 1;
-  const movieUpdate = movies.find((ele) => ele.id === id);
+const updateMovie = async(req, res) => {
+  try {
+    const updateMovie = await Movie.findByIdAndUpdate( req.params.id,req.body,{new: true,runValidators:true});
+    console.log("updateMovie",updateMovie)
+    res.status(200).json({
+      status:"Success",
+      data:{
+        movie:updateMovie
+      }
+    })
+  } catch (error) {
+    res.status(404).json({
+      status:"fail",
+      message:error.message
+    })
+  }
+  // const id = req.params.id * 1;
+  // const movieUpdate = movies.find((ele) => ele.id === id);
   //   if (!movieUpdate) {
   //     return res.status(404).json({
   //       status: "faild",
   //       message: "Movie with id " + id + " is not found",
   //     });
   //   }
-  const movieIndex = movies.indexOf(movieUpdate);
-  Object.assign(movieUpdate, req.body);
-  movies[movieIndex] = movieUpdate;
-  fs.writeFile("./data/movies.json", JSON.stringify(movies), (err) => {
-    res.status(200).json({
-      status: "success",
-      data: {
-        movie: movieUpdate,
-      },
-    });
-  });
+  // const movieIndex = movies.indexOf(movieUpdate);
+  // Object.assign(movieUpdate, req.body);
+  // movies[movieIndex] = movieUpdate;
+  // fs.writeFile("./data/movies.json", JSON.stringify(movies), (err) => {
+  //   res.status(200).json({
+  //     status: "success",
+  //     data: {
+  //       movie: movieUpdate,
+  //     },
+  //   });
+  // });
 };
-const deleteMovie = (req, res) => {
-  const id = req.params.id * 1;
-  const movieUpdate = movies.find((ele) => ele.id === id);
+const deleteMovie = async(req, res) => {
+  try {
+    const deleteMovie = await Movie.findByIdAndDelete(req.params.id)
+    res.status(200).json({
+      status: "success",
+      data: {
+        movie: deleteMovie,
+      },
+    });
+  } catch (error) {
+    return res.status(404).json({
+            status: "faild",
+            message: error.message
+          });
+  }
+  // const id = req.params.id * 1;
+  // const movieUpdate = movies.find((ele) => ele.id === id);
   //   if (!movieUpdate) {
   //     return res.status(404).json({
   //       status: "faild",
   //       message: "Movie with id " + id + " is not found",
   //     });
   //   }
-  const movieIndex = movies.indexOf(movieUpdate);
-  movies.splice(movieIndex, 1);
-  fs.writeFile("./data/movies.json", JSON.stringify(movies), (err) => {
-    res.status(200).json({
-      status: "success",
-      data: {
-        movie: null,
-      },
-    });
-  });
+  // const movieIndex = movies.indexOf(movieUpdate);
+  // movies.splice(movieIndex, 1);
+  // fs.writeFile("./data/movies.json", JSON.stringify(movies), (err) => {
+  //   res.status(200).json({
+  //     status: "success",
+  //     data: {
+  //       movie: null,
+  //     },
+  //   });
+  // });
 };
 
 module.exports = {
