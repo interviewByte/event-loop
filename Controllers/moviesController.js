@@ -26,13 +26,47 @@ const validateBody = (req, res, next) => {
 
 // GET api- /movies
 const getAllMovies = async (req, res) => {
+  const excludeField = ['page','sort','limit','fields'];
+  const queryObjet = {...req.query};
+  excludeField.forEach((ele)=>{
+    delete queryObjet[ele]
+  })
+  // console.log("queryObjet",queryObjet)
   try {
-    const allMovie = await Movie.find();
+    let query = Movie.find(queryObjet);
+    //SORTING LOGIC
+    if(req.query.sort){
+      const sortby = req.query.sort.split(',').join(' ');
+      //(releseYear, price)
+      query = query.sort(sortby)
+    }else{
+      query = query.sort('-createdAt')
+    }
+
+    //PAGINATION
+    const page = req.query.page*1 || 1;
+    const limit = req.query.limit*1 || 10;
+    //page 1: 1 to 10 and page2: 11 to 20 and page 3: 21 to 30
+    const skip = (page-1)*limit;
+     query = query.skip(skip).limit(limit);
+     if(req.query.page){
+      const moviesCount = await Movie.countDocuments();
+      if(skip >= moviesCount) {
+        throw new Error("This page is not found!")
+      }
+     }
+    const movies = await query;
+    // const allMovie = await Movie.find()
+    //   .where("duration")
+    //   .equals(req.query.duration)
+    //   .where("rating")
+    //   .equals(req.query.rating);
+
     res.status(200).json({
       message: "Success",
-      length: allMovie.length,
+      length: movies.length,
       data: {
-        allMovie,
+        movies,
       },
     });
   } catch (error) {
@@ -50,23 +84,22 @@ const getAllMovies = async (req, res) => {
   //   },
   // });
 };
-const getAllMovieById = async(req, res) => {
+const getAllMovieById = async (req, res) => {
   try {
     const id = req.params.id;
     // const getMovieById = await Movie.find({_id:id})
-    const getMovieById = await Movie.findById(id)
+    const getMovieById = await Movie.findById(id);
     res.status(200).json({
-      status:"Success",
-      data:getMovieById
-    })
-    
+      status: "Success",
+      data: getMovieById,
+    });
   } catch (error) {
     res.status(404).json({
       status: "fail",
-      message:error.message
-    })
+      message: error.message,
+    });
   }
-  
+
   // const id = req.params.id * 1;
   // const singleMovie = movies.find((ele) => ele.id === id);
   //   if (!singleMovie) {
@@ -128,21 +161,24 @@ const insertMovie = async (req, res) => {
   console.log(req.body);
   // res.send("Created")
 };
-const updateMovie = async(req, res) => {
+const updateMovie = async (req, res) => {
   try {
-    const updateMovie = await Movie.findByIdAndUpdate( req.params.id,req.body,{new: true,runValidators:true});
-    console.log("updateMovie",updateMovie)
+    const updateMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    console.log("updateMovie", updateMovie);
     res.status(200).json({
-      status:"Success",
-      data:{
-        movie:updateMovie
-      }
-    })
+      status: "Success",
+      data: {
+        movie: updateMovie,
+      },
+    });
   } catch (error) {
     res.status(404).json({
-      status:"fail",
-      message:error.message
-    })
+      status: "fail",
+      message: error.message,
+    });
   }
   // const id = req.params.id * 1;
   // const movieUpdate = movies.find((ele) => ele.id === id);
@@ -164,9 +200,9 @@ const updateMovie = async(req, res) => {
   //   });
   // });
 };
-const deleteMovie = async(req, res) => {
+const deleteMovie = async (req, res) => {
   try {
-    const deleteMovie = await Movie.findByIdAndDelete(req.params.id)
+    const deleteMovie = await Movie.findByIdAndDelete(req.params.id);
     res.status(200).json({
       status: "success",
       data: {
@@ -175,9 +211,9 @@ const deleteMovie = async(req, res) => {
     });
   } catch (error) {
     return res.status(404).json({
-            status: "faild",
-            message: error.message
-          });
+      status: "faild",
+      message: error.message,
+    });
   }
   // const id = req.params.id * 1;
   // const movieUpdate = movies.find((ele) => ele.id === id);
