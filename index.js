@@ -2,6 +2,7 @@ const { json } = require("body-parser");
 const expres = require("express");
 const morgan = require("morgan");
 const movieRouter = require("./Routes/moviesRoute");
+const authRouter = require("./Routes/authRouter")
 const app = expres();
 const { request } = require("http");
 const { type } = require("os");
@@ -45,6 +46,7 @@ app.use((req, res, next) => {
 });
 // USING ROUTES
 app.use("/api/v1/movies", movieRouter);
+app.use("/api/v1/users", authRouter);
 app.all('*', (req, res, next)=>{
   // res.status(404).json({
   //   status: 'fail',
