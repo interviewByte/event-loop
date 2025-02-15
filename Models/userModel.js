@@ -17,7 +17,8 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Please enter a password"],
-        minlength: 8
+        minlength: 8,
+        select: false
     },
     confirmPassword: {
         type: String,
@@ -38,6 +39,9 @@ userSchema.pre('save', async function(next){
     this.confirmPassword = undefined;
     next()
 })
+userSchema.methods.comparePasswordInDb = async function(pass, passDB) {
+    return await bcrypt.compare(pass,passDB)
+}
 // USER model will created in mongodb
 const User  = mongoose.model('User',userSchema);
 module.exports = User;
