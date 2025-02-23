@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const crypto = require('crypto')
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -16,8 +17,8 @@ const userSchema = new mongoose.Schema({
   photo: String,
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
+    enum: ["user", "admin"],
+    default: "user",
   },
   password: {
     type: String,
@@ -37,6 +38,8 @@ const userSchema = new mongoose.Schema({
     },
   },
   passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetTokenExpires: Date
 });
 // Pre save middleware(encrypt the password before saving in db using pre save middleware)
 userSchema.pre("save", async function (next) {
@@ -48,12 +51,21 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePasswordInDb = async function (pass, passDB) {
   return await bcrypt.compare(pass, passDB);
 };
-userSchema.methods.isPasswordChange = async function(JWTTimestemp) {
-    if(this.passwordChangedAt) {
-        const pswdChangedTimestamp = parseInt(this.passwordChangedAt.getTime()/1000,10)
-        return JWTTimestemp < pswdChangedTimestamp
-    }
-    return false;
+userSchema.methods.isPasswordChange = async function (JWTTimestemp) {
+  if (this.passwordChangedAt) {
+    const pswdChangedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestemp < pswdChangedTimestamp;
+  }
+  return false;
+};
+userSchema.methods.createResetPasswordToken =  function() {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+  this.passwordResetTokenExpires = Date.now()+ 10 * 60 * 1000;
+  return resetToken;
 };
 // USER model will created in mongodb
 const User = mongoose.model("User", userSchema);
